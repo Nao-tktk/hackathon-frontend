@@ -1,14 +1,6 @@
 // src/pages/Notifications.tsx
 import { useEffect, useState } from "react";
-import {
-  Container,
-  Title,
-  Paper,
-  Text,
-  Group,
-  Button,
-  Stack,
-} from "@mantine/core";
+import { Container, Title, Paper, Text, Group, Stack } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 
 interface Notification {
