@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://hackathon-backend-223315240416.europe-west1.run.app/api/$1"
+    }
+  ]
+}
