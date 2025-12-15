@@ -1,44 +1,30 @@
-import { useState, useEffect } from "react";
+import { MantineProvider } from "@mantine/core";
+import { Routes, Route } from "react-router-dom";
+import "@mantine/core/styles.css"; // Mantineのスタイルシート
+import { Header } from "./components/Header";
+import { Register } from "./pages/Register";
+import { Login } from "./pages/Login";
+import { ItemList } from "./pages/ItemList";
+import { SellItem } from "./pages/SellItem";
+import { ItemDetail } from "./pages/ItemDetail";
+import { Chat } from "./pages/Chat";
+import { Notifications } from "./pages/Notifications";
 
 function App() {
-  // 文字列を表示するので <string> で型指定します
-  const [data, setData] = useState<string>("読み込み中...");
-
-  // ★ あなたのCloud RunのURL
-  const API_URL =
-    "https://hackathon-backend-223315240416.europe-west1.run.app/user?name=test";
-
-  useEffect(() => {
-    fetch(API_URL)
-      .then((res) => res.json())
-      .then((result) => {
-        // 結果がnullならメッセージ、あればJSON文字列に変換してセット
-        setData(result ? JSON.stringify(result) : "データなし (接続成功！)");
-      })
-      .catch((err: unknown) => {
-        // エラーハンドリング
-        if (err instanceof Error) {
-          setData("エラー発生: " + err.message);
-        } else {
-          setData("予期せぬエラーが発生しました");
-        }
-      });
-  }, []);
-
   return (
-    <div style={{ padding: "50px", fontFamily: "sans-serif" }}>
-      <h1>Frontend & Backend Connection Test</h1>
-      <div
-        style={{
-          border: "1px solid #ccc",
-          padding: "20px",
-          borderRadius: "8px",
-        }}
-      >
-        <h3>バックエンドからの応答:</h3>
-        <p style={{ fontWeight: "bold", color: "blue" }}>{data}</p>
-      </div>
-    </div>
+    <MantineProvider>
+      <Header />
+
+      <Routes>
+        <Route path="/" element={<ItemList />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/sell" element={<SellItem />} />
+        <Route path="/items/:id" element={<ItemDetail />} />
+        <Route path="/chat/:itemId/:partnerId" element={<Chat />} />
+        <Route path="/notifications" element={<Notifications />} />
+      </Routes>
+    </MantineProvider>
   );
 }
 
