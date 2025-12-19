@@ -50,7 +50,7 @@ export const Header = () => {
                 variant="subtle"
                 color="orange"
               >
-                🔔 お知らせ
+                メッセージ
               </Button>
 
               <Button
