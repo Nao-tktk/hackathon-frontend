@@ -53,6 +53,15 @@ export const Header = () => {
                 🔔 お知らせ
               </Button>
 
+              <Button
+                component={Link}
+                to="/help"
+                variant="subtle"
+                color="grape"
+              >
+                ❓ ヘルプ
+              </Button>
+
               <Button component={Link} to="/sell" color="teal" variant="light">
                 出品する
               </Button>

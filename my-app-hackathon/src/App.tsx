@@ -9,6 +9,7 @@ import { SellItem } from "./pages/SellItem";
 import { ItemDetail } from "./pages/ItemDetail";
 import { Chat } from "./pages/Chat";
 import { Notifications } from "./pages/Notifications";
+import { Help } from "./pages/Help";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/items/:id" element={<ItemDetail />} />
         <Route path="/chat/:itemId/:partnerId" element={<Chat />} />
         <Route path="/notifications" element={<Notifications />} />
+        <Route path="/help" element={<Help />} />
       </Routes>
     </MantineProvider>
   );
