@@ -19,9 +19,16 @@ export const ItemCard = ({ item }: Props) => {
     >
       <Card.Section>
         <Image
-          src="https://placehold.co/400x200?text=No+Image" // 仮画像
-          height={160}
+          src={
+            // image_name が "data:..." で始まっていればそれを表示。
+            // そうでなければ（空文字や default.png なら）プレースホルダーを表示
+            item.image_name && item.image_name.startsWith("data:")
+              ? item.image_name
+              : "https://placehold.co/600x400?text=No+Image"
+          }
+          height={300}
           alt={item.name}
+          fit="contain" // 画像が切れないように
         />
       </Card.Section>
 

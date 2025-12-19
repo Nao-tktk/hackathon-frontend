@@ -72,12 +72,15 @@ export const ItemDetail = () => {
         <Card.Section>
           <Image
             src={
-              item.image_name === "default.png" || !item.image_name
-                ? "https://placehold.co/600x400?text=No+Image"
-                : item.image_name
+              // image_name が "data:..." で始まっていればそれを表示。
+              // そうでなければ（空文字や default.png なら）プレースホルダーを表示
+              item.image_name && item.image_name.startsWith("data:")
+                ? item.image_name
+                : "https://placehold.co/600x400?text=No+Image"
             }
             height={300}
             alt={item.name}
+            fit="contain" // 画像が切れないように
           />
         </Card.Section>
 

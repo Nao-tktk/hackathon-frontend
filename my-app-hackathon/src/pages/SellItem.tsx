@@ -11,10 +11,12 @@ import {
   Select,
   Textarea,
   Loader,
+  FileInput,
+  Image,
 } from "@mantine/core"; // Selectを追加
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { IconSparkles } from "@tabler/icons-react";
+import { IconSparkles, IconPhoto } from "@tabler/icons-react";
 
 type SellFormInput = {
   name: string;
@@ -23,9 +25,21 @@ type SellFormInput = {
   description: string;
 };
 
+const fileToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
+};
+
 export const SellItem = () => {
   const [submitting, setSubmitting] = useState(false);
   const [loadingAI, setLoadingAI] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+
   const navigate = useNavigate();
 
   const {
@@ -38,23 +52,44 @@ export const SellItem = () => {
 
   const currentName = watch("name");
 
+  const handleFileChange = async (payload: File | null) => {
+    setFile(payload);
+    if (payload) {
+      const base64 = await fileToBase64(payload);
+      setPreview(base64);
+    } else {
+      setPreview(null);
+    }
+  };
+
   const handleGenerateDescription = async () => {
-    if (!currentName) {
-      alert("先に商品名を入力してください！");
+    // 名前か画像、どっちかは欲しい
+    if (!currentName && !file) {
+      alert("商品名を入力するか、画像をアップロードしてください！");
       return;
     }
 
     setLoadingAI(true);
     try {
+      let imageBase64 = "";
+      if (file) {
+        // "data:image/png;base64,..." の頭の部分（メタデータ）を削除して送る必要がある場合が多いが、
+        // 今回はバックエンド側で処理するか、そのまま送ってGeminiに任せる。
+        // ここではそのまま送ります。
+        imageBase64 = await fileToBase64(file);
+      }
+
       const res = await fetch("/api/generate-description", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ item_name: currentName }),
+        body: JSON.stringify({
+          item_name: currentName,
+          item_image: imageBase64, // 👈 画像データも送る！
+        }),
       });
 
       if (res.ok) {
         const data = await res.json();
-        // フォームの説明文フィールドにAIの回答をセットする
         setValue("description", data.description);
       } else {
         alert("AI生成に失敗しました");
@@ -77,13 +112,18 @@ export const SellItem = () => {
     }
 
     try {
-      // データを整える
+      let imageString = "";
+      if (file) {
+        imageString = await fileToBase64(file);
+      }
+
       const payload = {
         name: data.name,
         price: data.price,
         category_id: Number(data.category_id), // 数値に変換
-        seller_id: Number(myId), // ★ユーザー機能ができるまでは「1」で固定！ここら辺は仮のデータだからあとで消す！！
+        seller_id: Number(myId),
         description: data.description, // 必須なら仮の値を入れる
+        image_name: imageString,
       };
 
       const response = await fetch("/api/items", {
@@ -112,6 +152,27 @@ export const SellItem = () => {
       </Title>
 
       <form onSubmit={handleSubmit(onSubmit)}>
+        <Box mb="md">
+          <FileInput
+            label="商品画像"
+            placeholder="画像を選択してください"
+            accept="image/png,image/jpeg"
+            leftSection={<IconPhoto size={16} />}
+            onChange={handleFileChange}
+            clearable
+          />
+          {preview && (
+            <Image
+              src={preview}
+              h={200}
+              mt="sm"
+              radius="md"
+              fit="contain"
+              bg="gray.1"
+            />
+          )}
+        </Box>
+
         <TextInput
           label="商品名"
           placeholder="例: 教科書"
