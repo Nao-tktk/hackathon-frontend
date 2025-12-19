@@ -25,11 +25,39 @@ type SellFormInput = {
   description: string;
 };
 
-const fileToBase64 = (file: File): Promise<string> => {
+const compressImage = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
+    const img = document.createElement("img");
     const reader = new FileReader();
+
     reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
+    reader.onload = (e) => {
+      img.src = e.target?.result as string;
+      img.onload = () => {
+        // 画像のリサイズ設定 (最大幅 800px にする)
+        const MAX_WIDTH = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > MAX_WIDTH) {
+          height = Math.round(height * (MAX_WIDTH / width));
+          width = MAX_WIDTH;
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          // JPEG形式で圧縮率0.7 (70%画質) にして文字列化
+          resolve(canvas.toDataURL("image/jpeg", 0.7));
+        } else {
+          reject(new Error("Canvas context failed"));
+        }
+      };
+    };
     reader.onerror = (error) => reject(error);
   });
 };
@@ -55,7 +83,7 @@ export const SellItem = () => {
   const handleFileChange = async (payload: File | null) => {
     setFile(payload);
     if (payload) {
-      const base64 = await fileToBase64(payload);
+      const base64 = await compressImage(payload);
       setPreview(base64);
     } else {
       setPreview(null);
@@ -76,7 +104,7 @@ export const SellItem = () => {
         // "data:image/png;base64,..." の頭の部分（メタデータ）を削除して送る必要がある場合が多いが、
         // 今回はバックエンド側で処理するか、そのまま送ってGeminiに任せる。
         // ここではそのまま送ります。
-        imageBase64 = await fileToBase64(file);
+        imageBase64 = await compressImage(file);
       }
 
       const res = await fetch("/api/generate-description", {
@@ -114,7 +142,7 @@ export const SellItem = () => {
     try {
       let imageString = "";
       if (file) {
-        imageString = await fileToBase64(file);
+        imageString = await compressImage(file);
       }
 
       const payload = {
