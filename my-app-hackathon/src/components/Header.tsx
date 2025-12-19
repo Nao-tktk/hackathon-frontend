@@ -50,7 +50,7 @@ export const Header = () => {
                 variant="subtle"
                 color="orange"
               >
-                メッセージ
+                受信メッセージ
               </Button>
 
               <Button
@@ -59,7 +59,7 @@ export const Header = () => {
                 variant="subtle"
                 color="grape"
               >
-                ❓ ヘルプ
+                ヘルプ
               </Button>
 
               <Button component={Link} to="/sell" color="teal" variant="light">

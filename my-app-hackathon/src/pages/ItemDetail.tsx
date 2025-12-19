@@ -110,7 +110,7 @@ export const ItemDetail = () => {
           variant="outline"
           size="lg"
         >
-          出品者に質問する 💬
+          出品者に質問する
         </Button>
         {/* ▲▲▲ 追加ここまで ▲▲▲ */}
 

@@ -56,7 +56,7 @@ export const Help = () => {
   return (
     <Container size="sm" py="xl">
       <Title order={2} mb="lg" ta="center">
-        🤖 AI ヘルプセンター
+        AI ヘルプセンター
       </Title>
       <Text c="dimmed" ta="center" mb="xl">
         アプリの使い方やルールについて、AIがお答えします。
@@ -103,7 +103,7 @@ export const Help = () => {
       {answer && (
         <Paper withBorder p="xl" radius="md" bg="gray.0">
           <Title order={4} mb="sm">
-            💡 AIからの回答
+            AIからの回答
           </Title>
           <Text style={{ whiteSpace: "pre-wrap", lineHeight: 1.6 }}>
             {answer}
