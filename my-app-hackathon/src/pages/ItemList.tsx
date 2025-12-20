@@ -22,7 +22,7 @@ export const ItemList = () => {
   // ▼▼▼ 変更: フィルターロジックの強化 ▼▼▼
   const filteredItems = data?.filter((item) => {
     // 1. 売り切れチェック
-    const isSoldCheckPassed = showSold ? true : !item.status;
+    const isSoldCheckPassed = showSold ? true : item.status !== "SOLD_OUT";
 
     if (!keyword) return isSoldCheckPassed;
 
