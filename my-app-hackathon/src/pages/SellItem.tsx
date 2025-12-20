@@ -14,9 +14,9 @@ import {
   FileInput,
   Image,
 } from "@mantine/core"; // Selectを追加
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { IconSparkles, IconPhoto } from "@tabler/icons-react";
+import { IconSparkles, IconPhoto, IconCoinYen } from "@tabler/icons-react";
 
 type SellFormInput = {
   name: string;
@@ -78,6 +78,10 @@ export const SellItem = () => {
     formState: { errors },
   } = useForm<SellFormInput>();
 
+  useEffect(() => {
+    register("price", { required: "価格は必須です", min: 1 });
+  }, [register]);
+
   const currentName = watch("name");
 
   const handleFileChange = async (payload: File | null) => {
@@ -127,6 +131,43 @@ export const SellItem = () => {
       alert("通信エラーが発生しました");
     } finally {
       setLoadingAI(false);
+    }
+  };
+
+  const [estimating, setEstimating] = useState(false);
+  const handleEstimatePrice = async () => {
+    if (!currentName && !file) {
+      alert("商品名か画像を入力してください");
+      return;
+    }
+    setEstimating(true);
+    try {
+      let imageBase64 = "";
+      if (file) {
+        imageBase64 = await compressImage(file);
+      }
+
+      const res = await fetch("/api/estimate-price", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          item_name: currentName,
+          item_image: imageBase64,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        // 価格をセット！
+        setValue("price", data.price);
+        alert(`AI査定結果: ¥${data.price}\n理由: ${data.reason}`);
+      } else {
+        alert("査定に失敗しました");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setEstimating(false);
     }
   };
 
@@ -252,6 +293,29 @@ export const SellItem = () => {
           onChange={(val) => setValue("price", Number(val))}
           error={errors.price?.message}
         />
+        <Group align="flex-end" mb="xl">
+          <NumberInput
+            label="価格"
+            placeholder="例: 1000"
+            style={{ flex: 1 }}
+            // × これは削除する（エラーの原因）
+            // {...register("price", { valueAsNumber: true })}
+
+            // ◎ 代わりにこう書く（手動連携）
+            value={watch("price")} // 今の値を表示
+            onChange={(val) => setValue("price", Number(val))} // 変更されたらフォームに書き込む
+            error={errors.price?.message}
+          />
+          <Button
+            color="teal"
+            onClick={handleEstimatePrice}
+            loading={estimating}
+            leftSection={<IconCoinYen size={16} />}
+            disabled={!currentName && !file}
+          >
+            AI査定
+          </Button>
+        </Group>
 
         <Group justify="center">
           <Button type="submit" fullWidth>

@@ -78,7 +78,7 @@ export const Chat = () => {
         setNewMessage("");
         fetchMessages(); // すぐに画面更新
       }
-    } catch (error) {
+    } catch {
       alert("送信エラー");
     }
   };
