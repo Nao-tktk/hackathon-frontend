@@ -29,7 +29,7 @@ export const Header = () => {
     >
       <Group justify="space-between">
         {/* 左側：ロゴ（クリックでトップへ） */}
-        <Link to="/" style={{ textDecoration: "none", color: "#A9CEEC" }}>
+        <Link to="/" style={{ textDecoration: "none", color: "#0067C0" }}>
           <Title order={3} style={{ cursor: "pointer" }}>
             Raku-Saku
           </Title>
