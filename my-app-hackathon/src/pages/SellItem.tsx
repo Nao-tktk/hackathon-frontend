@@ -286,13 +286,6 @@ export const SellItem = () => {
           required
         />
 
-        <NumberInput
-          label="価格"
-          placeholder="例: 1000"
-          mb="xl"
-          onChange={(val) => setValue("price", Number(val))}
-          error={errors.price?.message}
-        />
         <Group align="flex-end" mb="xl">
           <NumberInput
             label="価格"
