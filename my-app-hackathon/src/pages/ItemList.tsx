@@ -2,16 +2,7 @@ import useSWR from "swr";
 import { useState } from "react";
 import type { Item } from "../types";
 import { ItemCard } from "../components/ItemCard";
-import {
-  Loader,
-  Text,
-  Grid,
-  Checkbox,
-  Group,
-  TextInput,
-  Paper,
-  Title,
-} from "@mantine/core";
+import { Loader, Text, Grid, Checkbox, Group, TextInput } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react"; // 👈 アイコン追加
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -46,22 +37,6 @@ export const ItemList = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <Paper
-        shadow="md"
-        radius="md"
-        p="xl"
-        mb="xl"
-        bg="var(--mantine-color-blue-light)" // 薄い青背景
-        style={{ textAlign: "center" }}
-      >
-        <Title order={2} mb="sm">
-          次世代フリマアプリ FuriAI
-        </Title>
-        <Text c="dimmed">
-          AIが値付け・出品・翻訳をサポート。面倒な作業はもう不要です。
-        </Text>
-      </Paper>
-
       <Group justify="space-between" align="center" mb="lg">
         <h1 style={{ margin: 0 }}>商品一覧</h1>{" "}
         <Group>
