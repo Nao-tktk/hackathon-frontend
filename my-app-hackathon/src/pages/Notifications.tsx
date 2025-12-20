@@ -62,7 +62,7 @@ export const Notifications = () => {
             >
               <Group justify="space-between" mb="xs">
                 <Text fw={700} size="lg">
-                  {n.sender_name} さん
+                  送信者ID {n.sender_id}
                 </Text>
                 <Text size="xs" c="dimmed">
                   {new Date(n.created_at).toLocaleString()}
