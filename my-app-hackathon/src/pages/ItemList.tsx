@@ -24,6 +24,8 @@ export const ItemList = () => {
     // 1. 売り切れチェック
     const isSoldCheckPassed = showSold ? true : !item.status;
 
+    if (!keyword) return isSoldCheckPassed;
+
     // 2. キーワードチェック (商品名 or 説明文 に含まれているか)
     // toLowerCase() で大文字小文字を区別しないようにする
     const searchTarget = (item.name + (item.description || "")).toLowerCase();
